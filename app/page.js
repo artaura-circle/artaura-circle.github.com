@@ -106,58 +106,68 @@ function Nav({ current, setCurrent }) {
   };
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${scrolled ? 'bg-cream-100/85 backdrop-blur-md border-b border-sienna-100/40' : 'bg-transparent'}`}>
-      <div className="container flex items-center justify-between py-4">
-        <button onClick={() => go('Home')} className="flex items-center gap-3" aria-label={`${site.title} home`}>
-          <img src={site.logo} alt="" width={44} height={44} style={{ mixBlendMode: 'multiply' }} />
-          <span className="hidden sm:block font-display text-2xl tracking-wide text-sienna-500">ARTAURA</span>
-        </button>
+    <>
+      <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${scrolled ? 'bg-cream-100/85 backdrop-blur-md border-b border-sienna-100/40' : 'bg-transparent'}`}>
+        <div className="container flex items-center justify-between py-4">
+          <button onClick={() => go('Home')} className="flex items-center gap-3" aria-label={`${site.title} home`}>
+            <img src={site.logo} alt="" width={44} height={44} style={{ mixBlendMode: 'multiply' }} />
+            <span className="hidden sm:block font-display text-2xl tracking-wide text-sienna-500">ARTAURA</span>
+          </button>
 
-        <nav className="hidden md:flex items-center gap-8">
-          {site.navigation.map((n) => (
-            <button
-              key={n}
-              onClick={() => go(n)}
-              className={`link-underline text-sm tracking-wide ${current === n ? 'text-sienna-500 font-medium' : 'text-sienna-300'}`}
-            >
-              {n}
-            </button>
-          ))}
-        </nav>
+          <nav className="hidden md:flex items-center gap-8">
+            {site.navigation.map((n) => (
+              <button
+                key={n}
+                onClick={() => go(n)}
+                className={`link-underline text-sm tracking-wide ${current === n ? 'text-sienna-500 font-medium' : 'text-sienna-300'}`}
+              >
+                {n}
+              </button>
+            ))}
+          </nav>
 
-        <a
-          href={site.contact.instagram}
-          target="_blank"
-          rel="noreferrer"
-          className="hidden md:inline-flex items-center gap-2 border border-sienna-500 text-sienna-500 hover:bg-sienna-500 hover:text-cream-100 rounded-full px-5 py-2 text-sm transition"
-        >
-          <Instagram className="h-4 w-4" />
-          Follow
-        </a>
+          <a
+            href={site.contact.instagram}
+            target="_blank"
+            rel="noreferrer"
+            className="hidden md:inline-flex items-center gap-2 border border-sienna-500 text-sienna-500 hover:bg-sienna-500 hover:text-cream-100 rounded-full px-5 py-2 text-sm transition"
+          >
+            <Instagram className="h-4 w-4" />
+            Follow
+          </a>
 
-        <button className="md:hidden text-sienna-500" onClick={() => setOpen(true)} aria-label="Menu">
-          <Menu />
-        </button>
-      </div>
+          <button className="md:hidden text-sienna-500" onClick={() => setOpen(true)} aria-label="Menu">
+            <Menu />
+          </button>
+        </div>
+      </header>
 
+      {/*
+        IMPORTANT: The mobile menu lives OUTSIDE the <header> on purpose.
+        The header uses `backdrop-blur-md` when scrolled, and `backdrop-filter`
+        creates a new containing block for `position: fixed` elements (CSS spec).
+        If the menu sits inside the header it would be clipped to the header's
+        bounds — that is why we render it as a sibling.
+      */}
       <AnimatePresence>
         {open && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-cream-100 paper-texture"
+            transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
+            className="fixed inset-0 z-[70] overflow-y-auto bg-cream-100"
           >
-            <div className="container flex items-center justify-between py-5">
+            <div className="container flex items-center justify-between py-4">
               <img src={site.logo} alt="" width={48} height={48} style={{ mixBlendMode: 'multiply' }} />
               <button onClick={() => setOpen(false)} className="text-sienna-500" aria-label="Close"><X /></button>
             </div>
-            <div className="container mt-10 flex flex-col gap-6">
+            <div className="container mt-10 flex flex-col gap-6 pb-12">
               {site.navigation.map((n, i) => (
                 <motion.button
                   key={n}
                   initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0, transition: { delay: 0.05 * i } }}
+                  animate={{ opacity: 1, x: 0, transition: { delay: 0.06 * i, duration: 0.4 } }}
                   onClick={() => go(n)}
                   className="text-left font-display text-4xl text-sienna-500"
                 >
@@ -176,7 +186,7 @@ function Nav({ current, setCurrent }) {
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 }
 
